@@ -12,6 +12,7 @@ class SimpleModel(BoringModel):
         out = super().training_step(batch, batch_idx)
         if self.current_epoch == 0 and batch_idx == 1:
             raise RuntimeError("fault tolerant exception")
+        return out
 
 
 def run():
@@ -20,7 +21,7 @@ def run():
     val_data = DataLoader(RandomDataset(32, 64), batch_size=2, num_workers=2)
     test_data = DataLoader(RandomDataset(32, 64), batch_size=2, num_workers=2)
 
-    model = BoringModel()
+    model = SimpleModel()
     model.training_epoch_end = None
     trainer = Trainer(
         default_root_dir=os.getcwd(),
