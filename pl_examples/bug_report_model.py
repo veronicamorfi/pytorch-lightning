@@ -14,15 +14,16 @@ def run():
     test_data = DataLoader(RandomDataset(32, 64), batch_size=2, num_workers=2)
 
     model = BoringModel()
-
+    model.training_epoch_end = None
     trainer = Trainer(
         default_root_dir=os.getcwd(),
         num_sanity_val_steps=0,
-        max_epochs=3,
+        max_epochs=2,
         weights_summary=None,
         precision=16,
         gpus=2,
-        resume_from_checkpoint="/home/adrian/repositories/pytorch-lightning/lightning_logs/version_44/checkpoints/epoch=1-step=63.ckpt",
+        # resume_from_checkpoint="/home/adrian/repositories/pytorch-lightning/lightning_logs/version_44/checkpoints/epoch=1-step=63.ckpt",
+        resume_from_checkpoint="/home/adrian/repositories/pytorch-lightning/lightning_logs/version_51/checkpoints/epoch=0-step=15.ckpt", 
         plugins=DeepSpeedPlugin(),
     )
     trainer.fit(model, train_dataloaders=train_data, val_dataloaders=val_data)
