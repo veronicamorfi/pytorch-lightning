@@ -21,7 +21,7 @@ def run():
         max_epochs=3,
         weights_summary=None,
         precision=16,
-        gpus=1,
+        gpus=2,
         resume_from_checkpoint="/home/adrian/repositories/pytorch-lightning/lightning_logs/version_44/checkpoints/epoch=1-step=63.ckpt",
         plugins=DeepSpeedPlugin(),
     )
