@@ -34,10 +34,11 @@ def run(simulate_failure):
         precision=16,
         gpus=2,
         resume_from_checkpoint=(None if simulate_failure else ".pl_auto_save.ckpt"),
-        plugins=DeepSpeedPlugin(),
+        plugins="deepspeed_stage_2",
     )
     trainer.fit(model, train_dataloaders=train_data, val_dataloaders=val_data)
 
 
 if __name__ == "__main__":
     run(simulate_failure=True)
+    # run(simulate_failure=False)
