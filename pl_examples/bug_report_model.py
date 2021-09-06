@@ -1,9 +1,10 @@
 import os
-
 import torch
-from torch.utils.data import DataLoader, Dataset
-
+from torch.utils.data import Dataset, DataLoader
 from pytorch_lightning import LightningModule, Trainer
+from pytorch_lightning.callbacks import ModelCheckpoint
+from pytorch_lightning.plugins import DeepSpeedPlugin
+from deepspeed.ops.adam import FusedAdam
 
 
 class RandomDataset(Dataset):
@@ -29,15 +30,17 @@ class BoringModel(LightningModule):
     def training_step(self, batch, batch_idx):
         loss = self(batch).sum()
         self.log("train_loss", loss)
-        return {"loss": loss}
+        return loss
 
     def validation_step(self, batch, batch_idx):
         loss = self(batch).sum()
         self.log("valid_loss", loss)
+        return loss
 
     def test_step(self, batch, batch_idx):
         loss = self(batch).sum()
         self.log("test_loss", loss)
+        return loss
 
     def configure_optimizers(self):
         return torch.optim.SGD(self.layer.parameters(), lr=0.1)
@@ -45,20 +48,31 @@ class BoringModel(LightningModule):
 
 def run():
     train_data = DataLoader(RandomDataset(32, 64), batch_size=2)
-    val_data = DataLoader(RandomDataset(32, 64), batch_size=2)
+    val_data = DataLoader(RandomDataset(320, 64), batch_size=2)
     test_data = DataLoader(RandomDataset(32, 64), batch_size=2)
 
     model = BoringModel()
+    checkpoint_callback = ModelCheckpoint(
+        dirpath="tests/",
+        filename="{epoch:02d}",
+    )
     trainer = Trainer(
         default_root_dir=os.getcwd(),
+        gpus=-1,
         limit_train_batches=1,
         limit_val_batches=1,
         num_sanity_val_steps=0,
-        max_epochs=1,
+        precision=16,
+        accelerator="ddp",
+        max_epochs=10,
+        # max_epochs=100,
+        plugins=[DeepSpeedPlugin(stage=2)],
         weights_summary=None,
+        callbacks=[checkpoint_callback],
+        # resume_from_checkpoint='tests/epoch=9.ckpt',
     )
-    trainer.fit(model, train_dataloaders=train_data, val_dataloaders=val_data)
-    trainer.test(model, dataloaders=test_data)
+    trainer.fit(model, train_dataloader=train_data, val_dataloaders=val_data)
+    trainer.test(model, test_dataloaders=test_data)
 
 
 if __name__ == "__main__":
