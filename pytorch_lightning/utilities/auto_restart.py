@@ -255,6 +255,7 @@ def set_rng_states(rng_state_dict: Dict[str, Any]) -> None:
     """Set the global random state of :mod:`torch`, :mod:`numpy` and Python in the current process."""
     torch.set_rng_state(rng_state_dict.get("torch"))
     np.random.set_state(rng_state_dict.get("numpy"))
+    print(type(rng_state_dict.get("python")))
     python_set_rng_state(rng_state_dict.get("python"))
 
 
