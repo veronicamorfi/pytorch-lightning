@@ -33,7 +33,7 @@ def run(simulate_failure):
         weights_summary=None,
         precision=16,
         gpus=2,
-        resume_from_checkpoint=(".pl_auto_save.ckpt" if simulate_failure else None),
+        resume_from_checkpoint=(None if simulate_failure else ".pl_auto_save.ckpt"),
         plugins=DeepSpeedPlugin(),
     )
     trainer.fit(model, train_dataloaders=train_data, val_dataloaders=val_data)
