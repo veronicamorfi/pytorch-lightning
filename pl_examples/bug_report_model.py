@@ -18,11 +18,11 @@ def run():
     trainer = Trainer(
         default_root_dir=os.getcwd(),
         num_sanity_val_steps=0,
-        max_epochs=2,
+        max_epochs=3,
         weights_summary=None,
         precision=16,
         gpus=1,
-        # resume_from_checkpoint="/Users/adrian/repositories/pytorch-lightning/pl_examples/lightning_logs/version_43/checkpoints/epoch=2-step=95.ckpt",
+        resume_from_checkpoint="/home/adrian/repositories/pytorch-lightning/lightning_logs/version_44/checkpoints/epoch=1-step=63.ckpt",
         plugins=DeepSpeedPlugin(),
     )
     trainer.fit(model, train_dataloaders=train_data, val_dataloaders=val_data)
