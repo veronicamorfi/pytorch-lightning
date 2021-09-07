@@ -31,11 +31,13 @@ class BoringModel(LightningModule):
     def training_step(self, batch, batch_idx):
         loss = self(batch).sum()
         self.log("train_loss", loss)
+        print("train_step")
         return loss
 
     def validation_step(self, batch, batch_idx):
         loss = self(batch).sum()
         self.log("val_loss", loss)
+        print("val_step")
         return loss
 
     def configure_optimizers(self):
