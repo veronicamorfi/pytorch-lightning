@@ -174,6 +174,7 @@ class TrainingEpochLoop(loops.Loop):
         # -----------------------------------------
         should_check_val = self._should_check_val_fx(self.batch_idx, self.is_last_batch)
         if should_check_val:
+            print("run_validation")
             self.trainer.validating = True
             self._run_validation()
             self.trainer.training = True
@@ -242,6 +243,7 @@ class TrainingEpochLoop(loops.Loop):
         self.val_loop.reload_evaluation_dataloaders()
 
         with torch.no_grad():
+            print("val_loop.run")
             self.val_loop.run()
 
     def _accumulated_batches_reached(self) -> bool:

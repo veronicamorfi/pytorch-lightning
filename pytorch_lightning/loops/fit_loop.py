@@ -226,6 +226,7 @@ class FitLoop(Loop):
         data_fetcher = self.trainer.data_connector.get_profiled_dataloader(dataloader)
 
         with self.trainer.profiler.profile("run_training_epoch"):
+            print("epoch_loop.run")
             self.epoch_loop.run(data_fetcher)
 
             # the global step is manually decreased here due to backwards compatibility with existing loggers
