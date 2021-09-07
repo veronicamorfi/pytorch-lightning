@@ -1,11 +1,11 @@
 import os
+import shutil
+
 import torch
 from argparse import ArgumentParser
 from torch.utils.data import Dataset, DataLoader
 from pytorch_lightning import LightningModule, Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
-from pytorch_lightning.plugins import DeepSpeedPlugin
-from deepspeed.ops.adam import FusedAdam
 
 
 class RandomDataset(Dataset):
@@ -48,6 +48,9 @@ def run(resume=False):
     val_dataloader = DataLoader(RandomDataset(320, 64), batch_size=2)
 
     model = BoringModel()
+
+    if os.path.exists("checkpoints") and os.path.isdir("checkpoints"):
+        shutil.rmtree("checkpoints")
     checkpoint_callback = ModelCheckpoint(
         dirpath="checkpoints/",
         filename="{epoch:02d}",
