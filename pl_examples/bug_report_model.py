@@ -37,6 +37,7 @@ class BoringModel(LightningModule):
 
 
 def run():
+    os.environ["FAULT_TOLERANT_TRAINING"] = "1"
     train_data = DataLoader(RandomDataset(32, 64), batch_size=2)
 
     model = BoringModel()
