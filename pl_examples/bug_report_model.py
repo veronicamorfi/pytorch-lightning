@@ -63,12 +63,11 @@ def run(resume=False):
         num_sanity_val_steps=0,
         precision=16,
         accelerator="ddp",
-        # plugins=DeepSpeedPlugin(stage=2),
         max_epochs=(1 if not resume else 2),
         weights_summary=None,
         callbacks=[checkpoint_callback],
         resume_from_checkpoint=("checkpoints/epoch=00.ckpt" if resume else None),
-        # replace_sampler_ddp=False,
+        replace_sampler_ddp=False,
     )
     trainer.fit(model, train_dataloaders=train_data, val_dataloaders=val_dataloader)
 
