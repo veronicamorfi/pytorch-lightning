@@ -45,7 +45,7 @@ class BoringModel(LightningModule):
 def run(resume=False):
     os.environ["PL_FAULT_TOLERANT_TRAINING"] = "1"
     train_data = DataLoader(RandomDataset(32, 64), batch_size=2)
-    val_dataloader = DataLoader(RandomDataset(320, 64), batch_size=2)
+    val_dataloader = DataLoader(RandomDataset(32, 64), batch_size=2)
 
     model = BoringModel()
 
@@ -59,7 +59,6 @@ def run(resume=False):
         default_root_dir=os.getcwd(),
         gpus=2,
         limit_train_batches=1,
-        limit_val_batches=1,
         num_sanity_val_steps=0,
         precision=16,
         accelerator="ddp",
@@ -67,7 +66,6 @@ def run(resume=False):
         weights_summary=None,
         callbacks=[checkpoint_callback],
         resume_from_checkpoint=("checkpoints/epoch=00.ckpt" if resume else None),
-        replace_sampler_ddp=False,
     )
     trainer.fit(model, train_dataloaders=train_data, val_dataloaders=val_dataloader)
 
