@@ -122,6 +122,8 @@ class TrainingEpochLoop(loops.Loop):
         """
         batch_idx, (batch, is_last) = next(self.dataloader_iter)
 
+        print("batch_idx", batch_idx)
+
         if not self.trainer.data_connector.train_data_fetcher.store_on_device:
             with self.trainer.profiler.profile("training_batch_to_device"):
                 batch = self.trainer.accelerator.batch_to_device(batch)
@@ -129,6 +131,7 @@ class TrainingEpochLoop(loops.Loop):
         self.batch_progress.increment_ready()
 
         with self.trainer.profiler.profile("run_training_batch"):
+            print("batch_loop.run")
             batch_output = self.batch_loop.run(batch, batch_idx)
 
         self.batch_progress.increment_processed()
