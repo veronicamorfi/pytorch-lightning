@@ -168,8 +168,10 @@ def _prepare_dataloader_iter(data_fetcher: AbstractDataFetcher, batch_idx: int) 
     """Attach the dataloader."""
     if not isinstance(data_fetcher, DataLoaderIterDataFetcher):
         # restore iteration
+        print("enumerate dataiterfetcher")
         dataloader_iter = enumerate(data_fetcher, batch_idx)
     else:
+        print("else iter()")
         dataloader_iter = iter(data_fetcher)
     return dataloader_iter
 
