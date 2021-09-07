@@ -111,7 +111,8 @@ class TrainingEpochLoop(loops.Loop):
         self.trainer.fit_loop.epoch_progress.increment_started()
 
         print("prepare dataloader iter")
-        self.dataloader_iter = _prepare_dataloader_iter(dataloader_iter, self.batch_idx + 1)
+        self.dataloader_iter = enumerate(dataloader_iter, self.batch_idx + 1)
+        # self.dataloader_iter = _prepare_dataloader_iter(dataloader_iter, self.batch_idx + 1)
         print("prepared")
 
     def advance(self, *args: Any, **kwargs: Any) -> None:
