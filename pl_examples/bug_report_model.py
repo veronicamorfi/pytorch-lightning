@@ -55,7 +55,7 @@ def run(resume=False):
         num_sanity_val_steps=0,
         precision=16,
         accelerator="ddp",
-        plugins=DeepSpeedPlugin(stage=2),
+        # plugins=DeepSpeedPlugin(stage=2),
         max_epochs=(1 if not resume else 2),
         weights_summary=None,
         callbacks=[checkpoint_callback],
