@@ -1,5 +1,6 @@
 import os
 import torch
+from argparse import ArgumentParser
 from torch.utils.data import Dataset, DataLoader
 from pytorch_lightning import LightningModule, Trainer
 from pytorch_lightning.callbacks import ModelCheckpoint
@@ -36,7 +37,7 @@ class BoringModel(LightningModule):
         return torch.optim.SGD(self.layer.parameters(), lr=0.1)
 
 
-def run():
+def run(resume=False):
     os.environ["FAULT_TOLERANT_TRAINING"] = "1"
     train_data = DataLoader(RandomDataset(32, 64), batch_size=2)
 
@@ -53,16 +54,17 @@ def run():
         num_sanity_val_steps=0,
         precision=16,
         accelerator="ddp",
-        max_epochs=2,
-        # max_epochs=100,
-        # plugins=[DeepSpeedPlugin(stage=2)],
+        max_epochs=(1 if not resume else 2),
         weights_summary=None,
         callbacks=[checkpoint_callback],
-        resume_from_checkpoint="checkpoints/epoch=00.ckpt",
+        resume_from_checkpoint=("checkpoints/epoch=00.ckpt" if resume else None),
         # replace_sampler_ddp=False,
     )
     trainer.fit(model, train_dataloader=train_data)
 
 
 if __name__ == "__main__":
-    run()
+    parser = ArgumentParser()
+    parser.add_argument("--resume", action="store_true", type=bool)
+    args = parser.parse_args()
+    run(resume=args.resume)
