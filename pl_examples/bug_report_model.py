@@ -58,18 +58,19 @@ def run():
     )
     trainer = Trainer(
         default_root_dir=os.getcwd(),
-        gpus=-1,
+        gpus=1,
         limit_train_batches=1,
         limit_val_batches=1,
         num_sanity_val_steps=0,
         precision=16,
         accelerator="ddp",
-        max_epochs=10,
-        # max_epochs=100,
-        plugins=[DeepSpeedPlugin(stage=2)],
+        max_epochs=2,
+        #max_epochs=100,
+        #plugins=[DeepSpeedPlugin(stage=2)],
         weights_summary=None,
         callbacks=[checkpoint_callback],
-        # resume_from_checkpoint='tests/epoch=9.ckpt',
+        resume_from_checkpoint='tests/epoch=00.ckpt',
+        #replace_sampler_ddp=False,
     )
     trainer.fit(model, train_dataloader=train_data, val_dataloaders=val_data)
     trainer.test(model, test_dataloaders=test_data)
