@@ -40,7 +40,7 @@ class BoringModel(LightningModule):
 def run(resume=False):
     os.environ["FAULT_TOLERANT_TRAINING"] = "1"
     train_data = DataLoader(RandomDataset(32, 64), batch_size=2)
-    val_dataloader = DataLoader(RandomDataset(32, 64), batch_size=2)
+    val_dataloader = DataLoader(RandomDataset(320, 64), batch_size=2)
 
     model = BoringModel()
     checkpoint_callback = ModelCheckpoint(
