@@ -33,6 +33,11 @@ class BoringModel(LightningModule):
         self.log("train_loss", loss)
         return loss
 
+    def validation_step(self, batch, batch_idx):
+        loss = self(batch).sum()
+        self.log("val_loss", loss)
+        return loss
+
     def configure_optimizers(self):
         return torch.optim.SGD(self.layer.parameters(), lr=0.1)
 
