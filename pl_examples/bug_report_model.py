@@ -49,7 +49,7 @@ def run(resume=False):
 
     model = BoringModel()
 
-    if os.path.exists("checkpoints") and os.path.isdir("checkpoints"):
+    if not resume and os.path.exists("checkpoints") and os.path.isdir("checkpoints"):
         shutil.rmtree("checkpoints")
     checkpoint_callback = ModelCheckpoint(
         dirpath="checkpoints/",
