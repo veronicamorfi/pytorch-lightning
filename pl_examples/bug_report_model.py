@@ -67,7 +67,7 @@ def run(resume=False):
         resume_from_checkpoint=("checkpoints/epoch=00.ckpt" if resume else None),
         # replace_sampler_ddp=False,
     )
-    trainer.fit(model, train_dataloader=train_data, val_dataloaders=val_dataloader)
+    trainer.fit(model, train_dataloader=train_data)
 
 
 if __name__ == "__main__":
