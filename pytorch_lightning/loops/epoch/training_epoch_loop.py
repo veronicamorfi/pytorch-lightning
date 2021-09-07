@@ -104,11 +104,13 @@ class TrainingEpochLoop(loops.Loop):
 
     def on_run_start(self, dataloader_iter: Iterator, **kwargs: Any) -> None:
         # hook
+        print("on epoch start")
         self.trainer.logger_connector.on_epoch_start()
         self.trainer.call_hook("on_epoch_start")
         self.trainer.call_hook("on_train_epoch_start")
         self.trainer.fit_loop.epoch_progress.increment_started()
 
+        print("prepare dataloader iter")
         self.dataloader_iter = _prepare_dataloader_iter(dataloader_iter, self.batch_idx + 1)
 
     def advance(self, *args: Any, **kwargs: Any) -> None:
@@ -120,6 +122,7 @@ class TrainingEpochLoop(loops.Loop):
         Raises:
             StopIteration: When the epoch is canceled by the user returning -1
         """
+        print("next()")
         batch_idx, (batch, is_last) = next(self.dataloader_iter)
 
         print("batch_idx", batch_idx)
