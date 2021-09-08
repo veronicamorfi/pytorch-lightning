@@ -220,8 +220,13 @@ class TrainingEpochLoop(loops.Loop):
         # get the model and call model.training_epoch_end
         model = self.trainer.lightning_module
         print("here2")
-        if is_overridden("training_epoch_end", model) and self._epoch_output:
-            print("here3")
+        o = is_overridden("training_epoch_end", model)
+        print("here3")
+        e = self._epoch_output
+        print("here4")
+        check = o and e
+        if check:
+            print("here5")
             processed_outputs = self._prepare_outputs(self._epoch_output, batch_mode=False)
             # check that the dataloader/iterator produced a batch
             if processed_outputs:
