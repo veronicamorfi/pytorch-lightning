@@ -89,6 +89,7 @@ class TrainerCallbackHookMixin(ABC):
     def on_train_epoch_end(self):
         """Called when the epoch ends."""
         for callback in self.callbacks:
+            print(callback)
             callback.on_train_epoch_end(self, self.lightning_module)
 
     def on_validation_epoch_start(self):
