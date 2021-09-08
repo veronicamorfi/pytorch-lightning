@@ -68,6 +68,7 @@ def run(resume=False):
         max_epochs=(1 if not resume else 2),
         weights_summary=None,
         callbacks=[checkpoint_callback] if not resume else [],
+        checkpoint_callback=(not resume),
         resume_from_checkpoint=("checkpoints/epoch=00.ckpt" if resume else None),
     )
     trainer.fit(model, train_dataloaders=train_data, val_dataloaders=val_dataloader)
