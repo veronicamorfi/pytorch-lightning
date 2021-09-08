@@ -210,6 +210,8 @@ class TrainingEpochLoop(loops.Loop):
         Raises:
             MisconfigurationException: ``train_epoch_end`` does not return ``None``
         """
+        print("on_run_end")
+
         # inform logger the batch loop has finished
         self.trainer.logger_connector.epoch_end_reached()
 
