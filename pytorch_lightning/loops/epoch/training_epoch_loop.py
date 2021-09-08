@@ -246,6 +246,8 @@ class TrainingEpochLoop(loops.Loop):
         if self._num_training_batches_reached(self.is_last_batch):
             self.update_lr_schedulers("epoch", update_plateau_schedulers=True)
 
+        print("on_run_end_end")
+
     def teardown(self) -> None:
         self._results.cpu()
         self.batch_loop.teardown()
