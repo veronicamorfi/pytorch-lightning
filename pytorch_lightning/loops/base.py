@@ -184,6 +184,7 @@ class Loop(ABC):
             key = prefix + k
             if isinstance(v, BaseProgress):
                 destination[key] = v.state_dict()
+                print(destination[key])
             elif isinstance(v, Loop):
                 v.state_dict(destination, key + ".")
             elif isinstance(v, ResultCollection):
