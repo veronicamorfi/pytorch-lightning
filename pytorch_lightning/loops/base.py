@@ -189,6 +189,7 @@ class Loop(ABC):
             elif isinstance(v, ResultCollection):
                 # sync / unsync metrics
                 print("sync")
+                print(self.trainer.fit_loop.state_dict())
                 print(v.keys(), v.values())
                 v.sync()
                 print("sync 2")
