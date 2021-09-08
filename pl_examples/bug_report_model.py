@@ -53,6 +53,7 @@ def run(resume=False):
 
     if not resume and os.path.exists("checkpoints") and os.path.isdir("checkpoints"):
         shutil.rmtree("checkpoints")
+
     checkpoint_callback = ModelCheckpoint(
         dirpath="checkpoints/",
         filename="{epoch:02d}",
@@ -66,7 +67,7 @@ def run(resume=False):
         accelerator="ddp",
         max_epochs=(1 if not resume else 2),
         weights_summary=None,
-        callbacks=[checkpoint_callback],
+        callbacks=[checkpoint_callback] if not resume else None,
         resume_from_checkpoint=("checkpoints/epoch=00.ckpt" if resume else None),
     )
     trainer.fit(model, train_dataloaders=train_data, val_dataloaders=val_dataloader)
