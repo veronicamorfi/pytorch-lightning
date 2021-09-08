@@ -115,6 +115,9 @@ class TrainingEpochLoop(loops.Loop):
         # self.dataloader_iter = _prepare_dataloader_iter(dataloader_iter, self.batch_idx + 1)
         print("prepared")
 
+    def on_advance_start(self, *args: Any, **kwargs: Any) -> None:
+        print("advance_start")
+
     def advance(self, *args: Any, **kwargs: Any) -> None:
         """Runs a single training batch.
 
