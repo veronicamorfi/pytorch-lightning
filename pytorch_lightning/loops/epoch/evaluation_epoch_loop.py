@@ -132,6 +132,7 @@ class EvaluationEpochLoop(Loop):
 
     def on_run_end(self) -> EPOCH_OUTPUT:
         """Returns the outputs of the whole run."""
+        self.batch_progress.current.reset()
         outputs = self.outputs
         # free memory
         self.outputs = []
