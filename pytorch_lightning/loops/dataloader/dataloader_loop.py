@@ -63,3 +63,6 @@ class DataLoaderLoop(Loop):
 
     def on_advance_end(self) -> None:
         self.dataloader_progress.increment_completed()
+
+    def on_run_end(self) -> Any:
+        self.dataloader_progress.current.reset()
