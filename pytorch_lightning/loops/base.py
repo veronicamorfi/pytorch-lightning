@@ -188,9 +188,13 @@ class Loop(ABC):
                 v.state_dict(destination, key + ".")
             elif isinstance(v, ResultCollection):
                 # sync / unsync metrics
+                print("sync")
                 v.sync()
+                print("sync 2")
                 destination[key] = v.state_dict()
+                print("sync 3")
                 v.unsync()
+                print("sync 4")
 
         return destination
 
