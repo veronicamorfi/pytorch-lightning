@@ -318,6 +318,7 @@ class ModelCheckpoint(Callback):
         ):
             print("checkpoint 2")
             self.save_checkpoint(trainer)
+            print("checkpoint 3")
         trainer.fit_loop.global_step += 1
 
     def on_validation_end(self, trainer: "pl.Trainer", pl_module: "pl.LightningModule") -> None:
@@ -373,6 +374,7 @@ class ModelCheckpoint(Callback):
         epoch = trainer.current_epoch
         global_step = trainer.global_step
 
+        print("checkpoint 4")
         self._validate_monitor_key(trainer)
 
         # track epoch when ckpt was last checked
@@ -380,14 +382,18 @@ class ModelCheckpoint(Callback):
 
         # what can be monitored
         monitor_candidates = self._monitor_candidates(trainer, epoch=epoch, step=global_step)
+        print("checkpoint 5")
 
         # callback supports multiple simultaneous modes
         # here we call each mode sequentially
         # Mode 1: save the top k checkpoints
+        print("checkpoint 6")
         self._save_top_k_checkpoint(trainer, monitor_candidates)
         # Mode 2: save monitor=None checkpoints
+        print("checkpoint 7")
         self._save_none_monitor_checkpoint(trainer, monitor_candidates)
         # Mode 3: save last checkpoints
+        print("checkpoint 8")
         self._save_last_checkpoint(trainer, monitor_candidates)
 
         # notify loggers
