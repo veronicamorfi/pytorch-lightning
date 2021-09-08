@@ -179,7 +179,7 @@ class Loop(ABC):
             destination = {}
 
         destination[prefix + "state_dict"] = self.on_save_checkpoint()
-
+        print(destination[prefix + "sate_dict"])
         for k, v in self.__dict__.items():
             key = prefix + k
             if isinstance(v, BaseProgress):
@@ -189,7 +189,7 @@ class Loop(ABC):
             elif isinstance(v, ResultCollection):
                 # sync / unsync metrics
                 print("sync")
-                print(destination[prefix + "sate_dict"])
+
                 print(v.keys(), v.values())
                 v.sync()
                 print("sync 2")
