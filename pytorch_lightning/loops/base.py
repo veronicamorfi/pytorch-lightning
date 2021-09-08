@@ -179,7 +179,7 @@ class Loop(ABC):
             destination = {}
 
         destination[prefix + "state_dict"] = self.on_save_checkpoint()
-        print(destination[prefix + "sate_dict"])
+        print(destination[prefix + "state_dict"])
         for k, v in self.__dict__.items():
             key = prefix + k
             if isinstance(v, BaseProgress):
