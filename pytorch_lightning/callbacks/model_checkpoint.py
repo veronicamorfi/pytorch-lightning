@@ -309,12 +309,14 @@ class ModelCheckpoint(Callback):
         """Save a checkpoint at the end of the training epoch."""
         # as we advance one step at end of training, we use `global_step - 1` to avoid saving duplicates
         trainer.fit_loop.global_step -= 1
+        print("checkpoint 1")
         if (
             not self._should_skip_saving_checkpoint(trainer)
             and self._save_on_train_epoch_end
             and self._every_n_epochs > 0
             and (trainer.current_epoch + 1) % self._every_n_epochs == 0
         ):
+            print("checkpoint 2")
             self.save_checkpoint(trainer)
         trainer.fit_loop.global_step += 1
 
