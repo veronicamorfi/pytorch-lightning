@@ -218,14 +218,13 @@ class TrainingEpochLoop(loops.Loop):
         # get the model and call model.training_epoch_end
         model = self.trainer.lightning_module
         if is_overridden("training_epoch_end", model) and self._epoch_output:
+            print("here")
             processed_outputs = self._prepare_outputs(self._epoch_output, batch_mode=False)
             # check that the dataloader/iterator produced a batch
             if processed_outputs:
                 # run training_epoch_end
                 # refresh the result for custom logging at the epoch level
                 model._current_fx_name = "training_epoch_end"
-
-                print("here")
 
                 # lightningmodule hook
                 training_epoch_end_output = model.training_epoch_end(processed_outputs)
@@ -243,7 +242,6 @@ class TrainingEpochLoop(loops.Loop):
         # call train epoch end hooks
         self.trainer.call_hook("on_train_epoch_end")
         self.trainer.call_hook("on_epoch_end")
-
 
         self.trainer.logger_connector.on_epoch_end()
 
