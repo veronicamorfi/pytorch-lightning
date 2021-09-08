@@ -707,6 +707,7 @@ class ModelCheckpoint(Callback):
             return
 
         filepath = self._get_metric_interpolated_filepath_name(monitor_candidates, trainer)
+        print("save 1")
         self._save_model(trainer, filepath)
 
         if (
@@ -715,6 +716,7 @@ class ModelCheckpoint(Callback):
             and self.best_model_path != filepath
             and trainer.should_rank_save_checkpoint
         ):
+            print("checkpoint 9")
             self._del_model(trainer, self.best_model_path)
 
         self.best_model_path = filepath
