@@ -216,6 +216,8 @@ class CheckpointConnector:
 
         state_dict = self._loaded_checkpoint.get("loops")
         if state_dict:
+            print(len(state_dict))
+            print(state_dict)
             self.trainer.fit_loop.load_state_dict(state_dict["fit_loop"])
             self.trainer.validate_loop.load_state_dict(state_dict["validate_loop"])
             self.trainer.test_loop.load_state_dict(state_dict["test_loop"])
