@@ -241,6 +241,8 @@ class TrainingEpochLoop(loops.Loop):
         # call train epoch end hooks
         self.trainer.call_hook("on_train_epoch_end")
         self.trainer.call_hook("on_epoch_end")
+        print("here")
+
         self.trainer.logger_connector.on_epoch_end()
 
         if self._num_training_batches_reached(self.is_last_batch):
