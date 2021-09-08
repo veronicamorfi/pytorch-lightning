@@ -89,6 +89,8 @@ class OptimizerLoop(Loop):
         self.optim_progress.optimizer_idx += 1
 
     def on_run_end(self) -> Tuple[_OUTPUTS_TYPE, Optional[Any]]:
+        # on a complete run, reset current optim progress in case we want to resume
+        self.optim_progress.optimizer_idx = 0
         outputs = self.outputs
         hiddens = self._hiddens
         # free memory

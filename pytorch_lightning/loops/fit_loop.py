@@ -264,8 +264,8 @@ class FitLoop(Loop):
 
     def on_save_checkpoint(self) -> Dict:
         state_dict = super().on_save_checkpoint()
-        # FIXME(@tchaton) Should pass has_completed=True when iterator is exhausted ?
         print("hang 1")
+        # TODO: update has_completed to its proper value
         state_dict["dataloader_state_dict"] = self.trainer.train_dataloader.state_dict(has_completed=False)
         print("hang 2")
         return state_dict
