@@ -60,7 +60,7 @@ def run(resume=False):
     )
     trainer = Trainer(
         default_root_dir=os.getcwd(),
-        num_processes=1,  # for hang, switch to GPU
+        gpus=2,  # for hang, switch to GPU
         limit_train_batches=1,
         limit_val_batches=0,
         num_sanity_val_steps=0,
