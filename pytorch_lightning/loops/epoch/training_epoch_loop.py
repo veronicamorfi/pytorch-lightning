@@ -225,6 +225,8 @@ class TrainingEpochLoop(loops.Loop):
                 # refresh the result for custom logging at the epoch level
                 model._current_fx_name = "training_epoch_end"
 
+                print("here")
+
                 # lightningmodule hook
                 training_epoch_end_output = model.training_epoch_end(processed_outputs)
 
@@ -241,7 +243,7 @@ class TrainingEpochLoop(loops.Loop):
         # call train epoch end hooks
         self.trainer.call_hook("on_train_epoch_end")
         self.trainer.call_hook("on_epoch_end")
-        print("here")
+
 
         self.trainer.logger_connector.on_epoch_end()
 
