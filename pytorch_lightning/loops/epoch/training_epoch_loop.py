@@ -246,15 +246,15 @@ class TrainingEpochLoop(loops.Loop):
         self._epoch_output = None
         print("here6")
         self.trainer.fit_loop.epoch_progress.increment_processed()
-
+        print("here7")
         # call train epoch end hooks
         self.trainer.call_hook("on_train_epoch_end")
-        print("here7")
-        self.trainer.call_hook("on_epoch_end")
         print("here8")
+        self.trainer.call_hook("on_epoch_end")
+        print("here9")
         self.trainer.logger_connector.on_epoch_end()
 
-        print("here9")
+        print("here10")
         if self._num_training_batches_reached(self.is_last_batch):
             self.update_lr_schedulers("epoch", update_plateau_schedulers=True)
 
