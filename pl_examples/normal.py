@@ -48,12 +48,12 @@ def run(resume=False):
     )
     trainer = Trainer(
         default_root_dir=os.getcwd(),
-        gpus=[1, 2] if resume else 2,
+        gpus=[1, 2],
         num_sanity_val_steps=0,
         precision=16,
         accelerator="ddp",
         max_epochs=3 if resume else 2,
-        plugins=[DeepSpeedPlugin(stage=2)],
+        # plugins=[DeepSpeedPlugin(stage=2)],
         weights_summary=None,
         callbacks=[checkpoint_callback],
         resume_from_checkpoint="checkpoints_normal/epoch=01.ckpt" if resume else None,
