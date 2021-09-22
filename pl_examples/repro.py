@@ -56,7 +56,7 @@ def run(resume=False):
         plugins=[DeepSpeedPlugin(stage=2)],
         weights_summary=None,
         callbacks=[checkpoint_callback],
-        resume_from_checkpoint="checkpoints/epoch=09.ckpt" if resume else None,
+        resume_from_checkpoint="checkpoints/epoch=01.ckpt" if resume else None,
     )
     trainer.fit(model, train_dataloader=train_data, val_dataloaders=val_data)
 
