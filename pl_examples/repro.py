@@ -48,7 +48,7 @@ def run(resume=False):
     )
     trainer = Trainer(
         default_root_dir=os.getcwd(),
-        gpus=2,
+        gpus=[1, 2] if resume else 2,
         num_sanity_val_steps=0,
         precision=16,
         accelerator="ddp",
