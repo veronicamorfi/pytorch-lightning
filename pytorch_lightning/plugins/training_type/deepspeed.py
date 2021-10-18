@@ -22,6 +22,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, Generator, List, Mapping, Optional, Tuple, Union
 
 import torch
+from torch.nn import Module
 from torch.optim import Optimizer
 
 import pytorch_lightning as pl
@@ -324,6 +325,10 @@ class DeepSpeedPlugin(DDPPlugin):
         self.hysteresis = hysteresis
         self.min_loss_scale = min_loss_scale
 
+        self._precision = None
+        self.amp_level = None
+        self.amp_type = None
+
     def _load_config(self, config):
         if config is None and self.DEEPSPEED_ENV_VAR in os.environ:
             rank_zero_info(f"Loading DeepSpeed config from set {self.DEEPSPEED_ENV_VAR} environment variable")
@@ -337,6 +342,7 @@ class DeepSpeedPlugin(DDPPlugin):
                 config = json.load(f)
         return config
 
+    # getting called by Lightning trainer AND Lite
     def setup_distributed(self):
         reset_seed()
 
@@ -376,6 +382,38 @@ class DeepSpeedPlugin(DDPPlugin):
     def pre_dispatch(self):
         self.init_deepspeed()
         self.barrier()
+
+    # TODO: avoid code duplication by letting the plugin reuse this method
+    def setup_models_and_optimizers(
+        self, models: List[Module], optimizers: List[Optimizer]
+    ) -> Tuple[List[Module], List[Optimizer]]:
+        if not (len(models) == len(optimizers) == 1):
+            raise ValueError(
+                f"Currently only one model and one optimizer is supported with DeepSpeed."
+                f" Got {len(models)} models and {len(optimizers)} optimizers instead."
+            )
+
+        # TODO: is this the correct place to set this?
+        self.config["train_micro_batch_size_per_gpu"] = 1
+
+        self._model, optimizer = self._setup_model_and_optimizer(models[0], optimizers[0])
+
+        # TODO: do we need to call it here?
+        # self._set_deepspeed_activation_checkpointing()
+        return [self._model], [optimizer]
+
+    def _setup_model_and_optimizer(self, model: Module, optimizer: Optimizer):
+        # TODO: shouldn't this be optimizer.parameters?
+        model_parameters = filter(lambda p: p.requires_grad, model.parameters())
+        deepspeed_engine, deepspeed_optimizer, _, _ = deepspeed.initialize(
+            args=argparse.Namespace(device_rank=self.root_device.index),
+            config=self.config,
+            model=model,
+            model_parameters=model_parameters,  # TODO: is the type correct here?
+            optimizer=optimizer,
+            dist_init_required=False,
+        )
+        return deepspeed_engine, deepspeed_optimizer
 
     def init_deepspeed(self):
         # check that `configure_gradient_clipping` hook isn't overriden since deepspeed handles
@@ -482,7 +520,7 @@ class DeepSpeedPlugin(DDPPlugin):
 
     @property
     def precision(self) -> Union[str, int]:
-        return self.lightning_module.trainer.precision
+        return self._precision or self.lightning_module.trainer.precision
 
     def _set_deepspeed_activation_checkpointing(self):
         if self.config.get("activation_checkpointing"):
@@ -568,6 +606,9 @@ class DeepSpeedPlugin(DDPPlugin):
         self._format_precision_config()
 
     def _format_batch_size_and_grad_accum_config(self):
+        if self.lightning_module is None:
+            return
+
         if "gradient_accumulation_steps" in self.config:
             raise MisconfigurationException(
                 "Do not set `gradient_accumulation_steps` in the DeepSpeed config"
@@ -596,9 +637,10 @@ class DeepSpeedPlugin(DDPPlugin):
         return batch_size
 
     def _format_precision_config(self):
-        amp_type = self.lightning_module.trainer.accelerator_connector.amp_type
-        amp_level = self.lightning_module.trainer.accelerator_connector.amp_level
-        precision = self.lightning_module.trainer.accelerator_connector.precision
+        amp_type = self.amp_type or self.lightning_module.trainer.accelerator_connector.amp_type
+        precision = self.precision or self.lightning_module.trainer.accelerator_connector.precision
+        if amp_type == AMPType.APEX:
+            amp_level = self.amp_level or self.lightning_module.trainer.accelerator_connector.amp_level
         if precision in (16, "mixed"):
             if "fp16" not in self.config and amp_type == AMPType.NATIVE:
                 # FP16 is a DeepSpeed standalone AMP implementation
