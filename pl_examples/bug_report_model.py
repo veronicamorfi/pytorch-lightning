@@ -29,15 +29,11 @@ class BoringModel(LightningModule):
     def training_step(self, batch, batch_idx):
         loss = self(batch).sum()
         self.log("train_loss", loss)
-        return {"loss": loss}
+        return {"loss": loss, "data": batch_idx}
 
-    def validation_step(self, batch, batch_idx):
-        loss = self(batch).sum()
-        self.log("valid_loss", loss)
-
-    def test_step(self, batch, batch_idx):
-        loss = self(batch).sum()
-        self.log("test_loss", loss)
+    def training_step_end(self, batch):
+        mean_loss = batch["loss"].mean()
+        return {"loss": mean_loss, "data": batch["data"]}
 
     def configure_optimizers(self):
         return torch.optim.SGD(self.layer.parameters(), lr=0.1)
@@ -45,20 +41,16 @@ class BoringModel(LightningModule):
 
 def run():
     train_data = DataLoader(RandomDataset(32, 64), batch_size=2)
-    val_data = DataLoader(RandomDataset(32, 64), batch_size=2)
-    test_data = DataLoader(RandomDataset(32, 64), batch_size=2)
 
     model = BoringModel()
     trainer = Trainer(
         default_root_dir=os.getcwd(),
-        limit_train_batches=1,
-        limit_val_batches=1,
-        num_sanity_val_steps=0,
+        limit_train_batches=2,
         max_epochs=1,
-        enable_model_summary=False,
+        accelerator="dp",
+        gpus=2,
     )
-    trainer.fit(model, train_dataloaders=train_data, val_dataloaders=val_data)
-    trainer.test(model, dataloaders=test_data)
+    trainer.fit(model, train_dataloaders=train_data)
 
 
 if __name__ == "__main__":
