@@ -33,7 +33,12 @@ class BoringModel(LightningModule):
 
     def training_step_end(self, batch):
         mean_loss = batch["loss"].mean()
-        return {"loss": mean_loss, "data": batch["data"]}
+        outputs = {"loss": mean_loss, "data": batch["data"]}
+        print("outputs on step end", outputs)
+        return outputs
+
+    def training_epoch_end(self, outputs):
+        print("outputs on epoch end", outputs)
 
     def configure_optimizers(self):
         return torch.optim.SGD(self.layer.parameters(), lr=0.1)
