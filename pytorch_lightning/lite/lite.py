@@ -36,7 +36,6 @@ from pytorch_lightning.plugins import (
 )
 from pytorch_lightning.trainer.connectors.accelerator_connector import AcceleratorConnector
 from pytorch_lightning.trainer.data_loading import TrainerDataLoadingMixin
-from pytorch_lightning.trainer.trainer import Trainer
 from pytorch_lightning.utilities import DeviceType, DistributedType, move_data_to_device
 from pytorch_lightning.utilities.apply_func import apply_to_collection, convert_to_tensors
 from pytorch_lightning.utilities.data import has_iterable_dataset
